@@ -4,15 +4,14 @@ const API_URL = "http://localhost:8080";
 
 function App() {
   const [carros, setCarros] = useState([]);
-  const [modelos, setModelos] = useState([]); // ESTADO para guardar a lista de modelos
+  const [modelos, setModelos] = useState([]);
   const [form, setForm] = useState({ modelo_id: '', ano: '', combustivel: '', num_portas: '', cor: '' });
 
-  // FUNÇÃO para buscar os modelos do backend
   const fetchModelos = async () => {
     try {
       const response = await fetch(`${API_URL}/modelos`);
       const data = await response.json();
-      setModelos(data); // Guarda a lista de modelos no nosso estado
+      setModelos(data);
     } catch (error) {
       console.error("Erro ao buscar modelos:", error);
     }
@@ -30,7 +29,7 @@ function App() {
 
   useEffect(() => {
     fetchCarros();
-    fetchModelos(); // <<-- CHAMADA DA  FUNÇÃO
+    fetchModelos();
   }, []);
   
   const handleChange = (e) => {
@@ -39,7 +38,7 @@ function App() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.modelo_id) { // Validação para garantir que um modelo foi selecionado
+    if (!form.modelo_id) {
       alert("Por favor, selecione um modelo.");
       return;
     }
@@ -47,7 +46,6 @@ function App() {
     try {
       const payload = {
           ...form,
-          // O backend espera um objeto 'modelo' com a propriedade 'id'
           modelo: { id: parseInt(form.modelo_id) } 
       };
       delete payload.modelo_id; 
@@ -68,72 +66,104 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold text-center text-blue-600 mb-10">🚗 Controle de Veículos - WS Work</h1>
+    // Container principal que centraliza tudo
+    <div className="bg-gray-100 flex flex-col justify-center items-center p-4 sm:p-6 lg:p-8">
+      
+      {/* Título da Aplicação */}
+      <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-8 text-center">
+        🚗 Controle de Veículos
+      </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          
-          <div className="md:col-span-1 bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold mb-4">➕ Cadastrar Novo Carro</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              
+      {/* Container que agrupa os dois blocos principais */}
+      <div className="w-full max-w-6xl grid grid-cols-2">
+        
+        {/* Bloco da Esquerda: Lista de Carros */}
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden mx-6">
+          <div className="p-6 border-b border-gray-200">
+            <h2 className="text-xl font-semibold text-gray-800">📋 Lista de Carros Cadastrados</h2>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-left">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="p-4 font-semibold text-sm text-gray-600 uppercase">Modelo</th>
+                  <th className="p-4 font-semibold text-sm text-gray-600 uppercase">Ano</th>
+                  <th className="p-4 font-semibold text-sm text-gray-600 uppercase text-right">Valor (FIPE)</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {carros.length > 0 ? carros.map(carro => (
+                  <tr key={carro.id} className="hover:bg-gray-50">
+                    <td className="p-4 font-medium text-gray-900">{carro.nome_modelo}</td>
+                    <td className="p-4 text-gray-500">{carro.ano}</td>
+                    <td className="p-4 text-green-600 font-semibold text-right">
+                      {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(carro.valor)}
+                    </td>
+                  </tr>
+                )) : (
+                  <tr>
+                    <td colSpan="3" className="text-center p-8 text-gray-500">
+                      Nenhum carro cadastrado.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Bloco da Direita: Formulário de Cadastro */}
+        <div className="bg-white p-6 rounded-xl shadow-lg mx-6">
+          <h2 className="text-xl font-semibold mb-5 text-gray-800">➕ Adicionar Novo Veículo</h2>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            
+            <div>
+              <label htmlFor="modelo_id" className="block text-sm font-medium text-gray-700 mb-1">Modelo</label>
               <select 
+                id="modelo_id"
                 name="modelo_id" 
                 value={form.modelo_id} 
                 onChange={handleChange} 
                 required 
-                className="w-full border p-2 rounded bg-white"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="" disabled>Selecione um Modelo</option>
-                {/* Aqui nós mapeamos a lista de modelos para criar as opções do dropdown */}
+                <option value="" disabled>Selecione um Modelo...</option>
                 {modelos.map(modelo => (
                   <option key={modelo.id} value={modelo.id}>
                     {modelo.nome} ({modelo.marca.nome_marca})
                   </option>
                 ))}
               </select>
-
-              <input name="ano" value={form.ano} placeholder="Ano" type="number" onChange={handleChange} required className="w-full border p-2 rounded"/>
-              <input name="combustivel" value={form.combustivel} placeholder="Combustível" onChange={handleChange} required className="w-full border p-2 rounded"/>
-              <input name="num_portas" value={form.num_portas} placeholder="Nº de Portas" type="number" onChange={handleChange} required className="w-full border p-2 rounded"/>
-              <input name="cor" value={form.cor} placeholder="Cor" onChange={handleChange} required className="w-full border p-2 rounded"/>
-              <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition-colors">Cadastrar</button>
-            </form>
-          </div>
-
-          <div className="md:col-span-2 bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold mb-4">📋 Lista de Carros Cadastrados</h2>
-            <div className="overflow-x-auto">
-              <table className="min-w-full text-left">
-                <thead className="bg-gray-200">
-                  <tr>
-                    <th className="p-3">Modelo</th>
-                    <th className="p-3">Ano</th>
-                    <th className="p-3">Cor</th>
-                    <th className="p-3">Valor (FIPE)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {carros.length > 0 ? carros.map(carro => (
-                    <tr key={carro.id} className="border-b hover:bg-gray-50">
-                      <td className="p-3 font-medium">{carro.nome_modelo}</td>
-                      <td className="p-3">{carro.ano}</td>
-                      <td className="p-3">{carro.cor}</td>
-                      <td className="p-3 text-green-600 font-semibold">
-                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(carro.valor)}
-                      </td>
-                    </tr>
-                  )) : (
-                    <tr>
-                      <td colSpan="4" className="text-center p-4">Nenhum carro cadastrado.</td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
             </div>
-          </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="ano" className="block text-sm font-medium text-gray-700 mb-1">Ano</label>
+                <input id="ano" name="ano" value={form.ano} placeholder="Ex: 2023" type="number" onChange={handleChange} required className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+              </div>
+              <div>
+                <label htmlFor="num_portas" className="block text-sm font-medium text-gray-700 mb-1">Portas</label>
+                <input id="num_portas" name="num_portas" value={form.num_portas} placeholder="Ex: 4" type="number" onChange={handleChange} required className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="combustivel" className="block text-sm font-medium text-gray-700 mb-1">Combustível</label>
+                <input id="combustivel" name="combustivel" value={form.combustivel} placeholder="Ex: Flex" onChange={handleChange} required className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+              </div>
+              <div>
+                <label htmlFor="cor" className="block text-sm font-medium text-gray-700 mb-1">Cor</label>
+                <input id="cor" name="cor" value={form.cor} placeholder="Ex: Prata" onChange={handleChange} required className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+              </div>
+            </div>
+
+            <button type="submit" className="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+              Cadastrar
+            </button>
+          </form>
         </div>
+        
       </div>
     </div>
   );
