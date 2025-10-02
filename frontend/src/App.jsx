@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 // URL da API
-const API_URL = "/api";
+const API_URL = "http://wswork-api-env.eba-dazphmah.us-east-2.elasticbeanstalk.com";
 
 // Função para formatar o timestamp Unix para uma data legível
 const formatTimestamp = (timestamp) => {
