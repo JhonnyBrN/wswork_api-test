@@ -64,7 +64,7 @@ O repositório está organizado em um formato **monorepo**, com duas pastas prin
 
 ```bash
 # Clone o repositório
-git clone [https://github.com/seu-usuario/seu-repositorio.git](https://github.com/seu-usuario/seu-repositorio.git)
+git clone [https://github.com/JhonnyBrN/wswork_api-test.git](https://github.com/seu-usuario/seu-repositorio.git)
 cd seu-repositorio/backend
 
 # Instale as dependências e inicie a aplicação
