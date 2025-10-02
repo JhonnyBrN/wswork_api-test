@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const API_URL = "http://localhost:8080";
+const API_URL = "http://wswork-api-env.eba-dazphmah.us-east-2.elasticbeanstalk.com";
 
 function App() {
   const [carros, setCarros] = useState([]);
