@@ -12,11 +12,15 @@ Aplicação Full-Stack desenvolvida como parte do processo seletivo da **WS Work
 
 ## 🌐 Demonstração ao Vivo
 
-A aplicação está hospedada na AWS e pode ser acessada através do link abaixo:
+A aplicação está hospedada na **AWS S3** e pode ser acessada através do link abaixo:
 
 **[Acessar a Aplicação](http://wswork-api-teste-2025.s3-website.us-east-2.amazonaws.com)**
 
-*(Nota: Como o backend utiliza um banco de dados em memória (H2), os dados são reiniciados a cada deploy ou reinicialização do servidor.)*
+**[Acessar o BackEnd | H2 Console](http://wswork-api-env.eba-dazphmah.us-east-2.elasticbeanstalk.com/h2-console)**
+
+* **JDBC URL:** `jdbc:h2:mem:wsworkdb`
+* **User:** `sa`
+* **Password:** *(deixe em branco)*
 
 ---
 
@@ -93,12 +97,6 @@ A aplicação frontend estará disponível em `http://localhost:5173` (ou porta 
 
 Para desenvolvimento local, o projeto utiliza **H2 Database em memória**. Os dados iniciais de Marcas e Modelos são populados automaticamente pela classe `DataInitializer`.
 
-Para acessar o console do banco no navegador:
-
-* **URL:** `http://localhost:8080/h2-console`
-* **JDBC URL:** `jdbc:h2:mem:wsworkdb`
-* **User:** `sa`
-* **Password:** *(deixe em branco)*
 
 ---
 
